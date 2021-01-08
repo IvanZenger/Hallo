@@ -1,0 +1,776 @@
+openapi: 3.0.1
+info:
+  title: Planit API
+  description: API for Plani application
+  termsOfService: https://todo.ch
+  contact:
+    name: Ivan Zenger
+    email: ivan.zenger.1@postfinance.ch
+  license:
+    name: Go to Project
+    url: https://git.pnet.ch/middleware/planit-ng.git
+  version: 1.0.0
+servers:
+  - url: 'https://e1-zengeriv-alsu001.pnet.ch'
+    description: Development Server
+tags:
+  - name: unit
+    description: All about units
+  - name: planer
+    description: All about dates
+  - name: user
+    description: All about users
+  - name: job
+    description: All about jobs
+  - name: holiday
+    description: All about holidays
+paths:
+  /units:
+    description: Manage units
+    get:
+      tags:
+        - unit
+      summary: Returns all units
+      operationId: getUnits
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/unit'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    post:
+      tags:
+        - unit
+      summary: Add a unit
+      operationId: postUnit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/unit'
+      responses:
+        "201":
+          $ref: '#/components/responses/201'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /units/{id}:
+    summary: Manage specific unit
+    get:
+      tags:
+        - unit
+      summary: Get information about a Unit
+      operationId: getUnit
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unit'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      tags:
+        - unit
+      summary: Update Unit by ID
+      operationId: putUnit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/unit'
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - unit
+      summary: Delete unit by ID
+      operationId: deleteUnit
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    parameters:
+      - name: id
+        in: path
+        description: Define unit ID
+        required: true
+        schema:
+          type: integer
+          example: 2
+  /unit/{id}/users:
+    description: Manage users of a unit by Unit ID
+    get:
+      tags:
+        - unit
+      summary: Get all users of a unit by Unit ID
+      operationId: getUserOfUnit
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    parameters:
+      - name: id
+        in: path
+        description: Define unit ID
+        required: true
+        schema:
+          type: integer
+          example: 2
+  /planers:
+    description: Manage events
+    get:
+      tags:
+        - planer
+      summary: Get events by Unit ID
+      operationId: getPlaners
+      parameters:
+        - name: unit
+          in: query
+          description: Define Unit ID
+          required: true
+          schema:
+            type: integer
+            example: 2
+        - name: start
+          in: query
+          description: Defines start date of the first event
+          required: true
+          schema:
+            type: string
+            example: 2020-12-29
+        - name: end
+          in: query
+          description: Defines end date of the first event
+          required: true
+          schema:
+            type: string
+            example: 2020-12-29
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/planer'
+
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    post:
+      tags:
+        - planer
+      summary: Add a event
+      operationId: postPlaner
+      requestBody:
+        description: Create a new event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/planer'
+
+      responses:
+        "201":
+          $ref: '#/components/responses/201'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /planer/{id}:
+    get:
+      tags:
+        - planer
+      summary: Get information of a event by ID
+      operationId: getPlaner
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/planer'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      tags:
+        - planer
+      summary: Update a event by ID
+      operationId: putPlaner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/unit'
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - planer
+      summary: Delete event by ID
+      operationId: deletePlaner
+      parameters:
+        - name: id
+          in: path
+          description: Define id_unit
+          required: true
+          schema:
+            type: integer
+            example: 2
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+
+    parameters:
+      - name: id
+        in: path
+        description: Define planer ID
+        required: true
+        schema:
+          type: integer
+          example: 2
+  /users:
+    get:
+      tags:
+        - user
+      summary: Get all users
+      operationId: getUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    post:
+      tags:
+        - user
+      summary: Create a new user
+      operationId: postUser
+      parameters:
+        - name: unit
+          in: query
+          description: Specify which unit(s) the user is in by entering the unit ID
+          required: true
+          style: form
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        "201":
+          $ref: '#/components/responses/201'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /users/{id}:
+    description: Manage user by ID
+    get:
+      tags:
+        - user
+      summary: Get user by ID
+      operationId: getUser
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      tags:
+        - user
+      summary: Update information of a user by ID
+      operationId: updateUser
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - user
+      summary: Delete user by ID
+      operationId: deleteUser
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+
+    parameters:
+      - name: id
+        in: path
+        description: Define the user ID
+        required: true
+        schema:
+          type: integer
+          example: 177
+
+  /users/{id}/units:
+    description: Manage all units to which the user is assigned
+    get:
+      tags:
+        - user
+      summary: Get all units to which the user is assigned
+      operationId: getUserInUnits
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/unit'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    parameters:
+      - name: id
+        in: path
+        description: Define unit ID
+        required: true
+        schema:
+          type: integer
+          example: 2
+  /job:
+    description: Manage all jobs
+    get:
+      tags:
+        - job
+      summary: Get all Jobs
+      operationId: getJobs
+      parameters:
+        - name: Unit ID
+          in: query
+          description: Defines the Unit ID to get all jobs from a Unit
+          required: false
+          schema:
+            type: integer
+            example: 2
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/job'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    post:
+      tags:
+        - job
+      summary: Add a new Job
+      operationId: postJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/job'
+      responses:
+        "201":
+          $ref: '#/components/responses/201'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+  /job/{id}:
+    description: Manage Jobs by ID
+    get:
+      tags:
+        - job
+      summary: Get Job by ID
+      operationId: getJob
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/job'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      tags:
+        - job
+      summary: Update a Job by ID
+      operationId: updateJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/job'
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - job
+      summary: Delete a Job by ID
+      operationId: deleteJob
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    parameters:
+      - name: id
+        in: path
+        description: Define Holiday ID
+        required: true
+        schema:
+          type: integer
+          example: 2
+
+  /holidays:
+    description: Manage all holidays
+    get:
+      tags:
+        - holiday
+      summary: Get all Holiday by ID
+      operationId: getHolidays
+      parameters:
+        - name: start
+          in: query
+          description: Defines start date of the first holiday
+          required: false
+          schema:
+            type: string
+            example: 2020-12-29
+        - name: end
+          in: query
+          description: Defines end date of the first holiday
+          required: false
+          schema:
+            type: string
+            example: 2020-12-29
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/holiday'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    post:
+      tags:
+        - holiday
+      summary: Create a new Holiday
+      operationId: createHoliday
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/holiday'
+      responses:
+        "201":
+          $ref: '#/components/responses/201'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+
+  /holidays/{id}:
+    description: Manage Holiday by ID
+    get:
+      tags:
+        - holiday
+      summary: Get Holiday by ID
+      operationId: getHoliday
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/holiday'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    put:
+      tags:
+        - holiday
+      summary: Update a Holiday by ID
+      operationId: updateHoliday
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/holiday'
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - holiday
+      summary: Delete a Holiday by ID
+      operationId: deleteHoliday
+      responses:
+        "200":
+          $ref: '#/components/responses/200'
+        "400":
+          $ref: '#/components/responses/400'
+        "404":
+          $ref: '#/components/responses/404'
+        "500":
+          $ref: '#/components/responses/500'
+
+    parameters:
+      - name: id
+        in: path
+        description: Define Holiday ID
+        required: true
+        schema:
+          type: integer
+          example: 2
+
+components:
+  schemas:
+    unit:
+      properties:
+        id_unit:
+          type: integer
+          description: ID of record
+          example: 2
+        unit:
+          type: string
+          example: 'Linux'
+        managerid:
+          type: integer
+          example: 10
+
+    planer:
+      properties:
+        id_planer:
+          type: integer
+          example: 3747
+        user_id:
+          type: integer
+          example: 10
+        job_id:
+          type: integer
+          example: 23
+        date:
+          type: string
+          example: 2019-03-01
+        Job:
+          $ref: '#/components/schemas/job'
+    job:
+      properties:
+        id_job:
+          type: integer
+          example: 43
+        unit_id:
+          type: integer
+          example: 3
+        description:
+          type: string
+          example: "Tagesdienst und Pikett"
+        shortname:
+          type: string
+          example: "TP"
+        color:
+          type: string
+          example: "#FFD700"
+        start:
+          type: string
+          example: "2020-12-29T00:01:00"
+        end:
+          type: string
+          example: "2020-12-29T23:59:59"
+    user:
+      properties:
+        id_user:
+          type: integer
+          example: 177
+        firstname:
+          type: string
+          example: "Nicola"
+        lastname:
+          type: string
+          example: Lüthi
+        mail:
+          type: string
+          example: nicola.luehti.1@postfinance.ch
+        mobile:
+          type: string
+          example: 076 466 75 35
+        technical:
+          type: boolean
+          example: false
+        reader:
+          type: boolean
+          example: true
+        planer:
+          type: boolean
+          example: false
+        invitations:
+          type: boolean
+          example: false
+    holiday:
+      properties:
+        id_holiday:
+          type: integer
+          example: 42
+        name:
+          type: string
+          example: Weihnachten
+        date:
+          type: string
+          example: 2020-12-26
+
+  responses:
+    "200":
+      description: OK
+    "201":
+      description: Created
+    "400":
+      description: Bad request
+    "404":
+      description: Not Found
+    "500":
+      description: Internal Server Error
+
